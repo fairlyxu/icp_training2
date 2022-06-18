@@ -1,0 +1,5 @@
+type anon_class_13_1 = 
+ service {
+   create_canister: () -> (opt principal);
+ };
+service : (nat, nat, vec principal) -> anon_class_13_1
