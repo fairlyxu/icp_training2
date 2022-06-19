@@ -101,9 +101,9 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
      /// 1.生成一个提案
     public shared ({caller})  func  make_proposal (operation_type: GLOBAL_INFO.OperationType, canister_id : Principal, wasm_module: ?GLOBAL_INFO.Wasm_module) : async () {
             //1. 确认是否是团队成员之一
-            assert (checkMember(caller));
+            assert (check_member(caller));
             //2.  确认canister 是否存在
-            assert (checkCanisterExist(canister_id)); 
+            assert (check_canisterExist(canister_id)); 
 
             //3. 确认该提案是否有权限限制
             switch (operation_type) { 
@@ -113,7 +113,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
                 case (_) { assert( checkRestricted(canister_id)); };
             };
             //4. 添加到提案队列
-            pushProposal(caller, operation_type, canister_id, wasm_module);
+            push_proposal(caller, operation_type, canister_id, wasm_module);
     };
 
     //2. 对提案投票 
@@ -189,7 +189,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
  
 
     // 4.提交提案
-    private func pushProposal (caller: Principal, operation_type: GLOBAL_INFO.OperationType, canister_id: Principal, wasm_module: ?GLOBAL_INFO.Wasm_module) {
+    private func push_proposal (caller: Principal, operation_type: GLOBAL_INFO.OperationType, canister_id: Principal, wasm_module: ?GLOBAL_INFO.Wasm_module) {
         proposalId += 1;
         proposals :=  Trie.put (proposals, {hash = Hash.hash(proposalId); key =  proposalId}, Nat.equal, {
             proposal_id = proposalId;
@@ -206,19 +206,19 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     };
 
     //检查是否是团队成员
-    private func checkMember(member: Principal) : Bool {
+    private func check_member(member: Principal) : Bool {
         TrieSet.mem(memberSet, member, Principal.hash(member), Principal.equal);
     };
 
     //检查canister是否存在
-    private func checkCanisterExist(canister_id: Principal) : Bool {
+    private func check_canisterExist(canister_id: Principal) : Bool {
         switch (Trie.get(canisters, {hash = Principal.hash(canister_id); key =  canister_id}, Principal.equal)) {
             case null return false;
             case _ return true;
         };
     };
     //检查是否限权
-    private func checkRestricted (canister_id : Principal) : Bool {
+    private func check_restricted (canister_id : Principal) : Bool {
         switch(Trie.get(canisters, {hash = Principal.hash(canister_id); key = canister_id}, Principal.equal)) {
             case (?canister_info) return canister_info.is_restricted;
             case null return false;
