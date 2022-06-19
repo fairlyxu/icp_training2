@@ -29,9 +29,13 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     private stable var proposals : Trie.Trie<Nat, GLOBAL_INFO.Proposal> = Trie.empty<Nat, GLOBAL_INFO.Proposal>();
 
     private stable var proposalId : Nat = 0 ; 
-
+    
+    // 查询所有成员 
+    public shared({ caller }) func show_members() : async [T.Propose] { 
+      Iter.toArray(memberSet.vals());
+    };
     //查询所有的提案
-    public shared({ caller }) func show_propose() : async [T.Propose] { 
+    public shared({ caller }) func show_proposals() : async [T.Propose] { 
       Iter.toArray(proposals.vals());
     };
 
