@@ -30,6 +30,16 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
 
     private stable var proposalId : Nat = 0 ; 
 
+    //查询所有的提案
+    public shared({ caller }) func show_propose() : async [T.Propose] { 
+      Iter.toArray(proposals.vals());
+    };
+
+    //显示所有的Canister
+    public shared func show_canisters() : async [T.MultiSignatureCanister] {
+      Iter.toArray(canisters.vals());
+    }; 
+
     // create canister 
     public shared ({caller}) func create_canister() : async ?Principal{
         // check
