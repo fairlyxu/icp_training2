@@ -32,7 +32,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     // create canister 
     public shared ({caller}) func create_canister() : async ?Principal{
         // check
-        assert (checkMember(caller));
+        assert (check_member(caller));
         let settings = {
             freezing_threshold = null;
             controllers = ?[Principal.fromActor(self)];
@@ -108,9 +108,9 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
             //3. 确认该提案是否有权限限制
             switch (operation_type) { 
                 //3.1 如果没有的话就增加 add Restricted, 
-                case (#addRestricted) { assert(not checkRestricted(canister_id)) };
+                case (#addRestricted) { assert(not check_restricted(canister_id)) };
                 //3.2 否则的话就不增加权限限制 /start stop install delete, check canister restricted
-                case (_) { assert( checkRestricted(canister_id)); };
+                case (_) { assert( check_restricted(canister_id)); };
             };
             //4. 添加到提案队列
             push_proposal(caller, operation_type, canister_id, wasm_module);
