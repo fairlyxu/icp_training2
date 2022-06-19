@@ -19,6 +19,7 @@ To learn more before you start working with hello_canister, see the following do
 If you want to start working on your project right away, you might want to try the following commands:
 
 ```bash
+dfx new hello_canister
 cd hello_canister/
 dfx help
 dfx config --help
