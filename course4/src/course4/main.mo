@@ -5,6 +5,8 @@ import Trie "mo:base/Trie";
 import Hash "mo:base/Hash";
 import Nat "mo:base/Nat";
 import Array "mo:base/Array";
+import Iter "mo:base/Iter";
+import Cycles "mo:base/ExperimentalCycles";
 import Option "mo:base/Option";
 
 import IC "./ic";
@@ -55,7 +57,9 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
             memory_allocation = null;
             compute_allocation = null;
         };
- 
+
+        //add cycle
+        Cycles.add(1_000_000_000_000);
         let create_res  = await ic.create_canister({settings = ? settings}); 
         //appending canister to canisters
         canisters := Trie.put(
@@ -68,7 +72,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     };
 
     // install 
-    private shared ({caller}) func install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
+    public shared ({caller}) func install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
         //增加至提案队列
         //make_proposal( (#install, canister_id,wasm_module)) 
         await ic.install_code ({
@@ -81,17 +85,17 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
  
 
     // delete_canister
-    private shared ({caller}) func delete_canister(canister_id : Principal) : async () {  
+    public shared ({caller}) func delete_canister(canister_id : Principal) : async () {  
         let res = await ic.delete_canister({canister_id = canister_id});
     };
 
      // start_canister
-    private shared ({caller}) func start_canister(canister_id : Principal) : async () {   
+    public shared ({caller}) func start_canister(canister_id : Principal) : async () {   
         let res = await ic.start_canister ({ canister_id = canister_id});
     };
 
     // stop_canister
-    private shared ({caller}) func stop_canister(canister_id : Principal) : async () {  
+    public shared ({caller}) func stop_canister(canister_id : Principal) : async () {  
         let res = await ic.stop_canister ({ canister_id = canister_id});
     };
     // add_restricted

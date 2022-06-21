@@ -53,7 +53,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     };
 
     // install 
-    private func install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
+     public shared ({caller})  install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
         await ic.install_code ({
             arg = [];
             wasm_module = Option.unwrap(wasm_module);
@@ -65,17 +65,17 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
  
 
     // delete_canister
-    private func delete_canister(canister_id : Principal) : async () { 
+    public shared ({caller})  delete_canister(canister_id : Principal) : async () { 
         let res = await ic.delete_canister({canister_id = canister_id});
     };
 
      // start_canister
-    private func start_canister(canister_id : Principal) : async () { 
+     public shared ({caller})  start_canister(canister_id : Principal) : async () { 
         let res = await ic.start_canister ({ canister_id = canister_id});
     };
 
     // stop_canister
-    private func stop_canister(canister_id : Principal) : async () { 
+     public shared ({caller})  stop_canister(canister_id : Principal) : async () { 
         let res = await ic.stop_canister ({ canister_id = canister_id});
     };
     // add_restricted

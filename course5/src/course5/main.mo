@@ -5,14 +5,16 @@ import Trie "mo:base/Trie";
 import Hash "mo:base/Hash";
 import Nat "mo:base/Nat";
 import Array "mo:base/Array";
+import Iter "mo:base/Iter";
+import Cycles "mo:base/ExperimentalCycles";
 import Option "mo:base/Option";
 
 import IC "./ic";
 import GLOBAL_INFO "./global_info";
 /*
  传入参数说明：
- 1. min 为最小提案数量
- 2. total 为总人数
+ 1. min 为最小通过提案的成员数量
+ 2. total 为总成员数
  3. members 成员
 */
 actor class (min : Nat, total : Nat, members : [Principal]) = self {
@@ -31,18 +33,20 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     private stable var proposalId : Nat = 0 ; 
     
     // 查询所有成员 
-    public shared({ caller }) func show_members() : async [T.Propose] { 
-      Iter.toArray(memberSet.vals());
+    /*  
+    public shared func show_members() : async [Principal] {
+        Iter.toArray(memberSet.vals());
     };
+
     //查询所有的提案
-    public shared({ caller }) func show_proposals() : async [T.Propose] { 
+    public shared({ caller }) func show_proposals() : async [GLOBAL_INFO.Proposal] { 
       Iter.toArray(proposals.vals());
     };
 
     //显示所有的Canister
-    public shared func show_canisters() : async [T.MultiSignatureCanister] {
+    public shared func show_canisters() : async [GLOBAL_INFO.CanisterInfo] {
       Iter.toArray(canisters.vals());
-    }; 
+    }; */
 
     // create canister 
     public shared ({caller}) func create_canister() : async ?Principal{
@@ -54,9 +58,10 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
             memory_allocation = null;
             compute_allocation = null;
         };
- 
-        let create_res  = await ic.create_canister({settings = ? settings});
 
+        //add cycle
+        Cycles.add(1_000_000_000_000);
+        let create_res  = await ic.create_canister({settings = ? settings}); 
         //appending canister to canisters
         canisters := Trie.put(
             canisters, 
@@ -69,11 +74,8 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
 
     // install 
     public shared ({caller}) func install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
-        if(caller != Principal.fromActor(this)){
-          //确认是否被限权
-          assert (check_member(caller));
-          make_proposal (#removeRestricted, canister_id,wasm_module) ;  
-        }; 
+        //增加至提案队列
+        //make_proposal( (#install, canister_id,wasm_module)) 
         await ic.install_code ({
             arg = [];
             wasm_module = Option.unwrap(wasm_module);
@@ -84,23 +86,21 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
  
 
     // delete_canister
-    public shared ({caller}) func delete_canister(canister_id : Principal) : async () { 
-        
+    public shared ({caller}) func delete_canister(canister_id : Principal) : async () {  
         let res = await ic.delete_canister({canister_id = canister_id});
     };
 
      // start_canister
-    public shared ({caller}) func start_canister(canister_id : Principal) : async () {  
-        
+    public shared ({caller}) func start_canister(canister_id : Principal) : async () {   
         let res = await ic.start_canister ({ canister_id = canister_id});
     };
 
     // stop_canister
-    public shared ({caller}) func stop_canister(canister_id : Principal) : async () { 
+    public shared ({caller}) func stop_canister(canister_id : Principal) : async () {  
         let res = await ic.stop_canister ({ canister_id = canister_id});
     };
     // add_restricted
-    public func add_restricted(canister_id : Principal) : () { 
+    private  func add_restricted(canister_id : Principal) : () { 
       let new_canister_info : GLOBAL_INFO.CanisterInfo = {
             canister_id = canister_id;
             is_restricted = true;
@@ -109,7 +109,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     };
     
     // remove_restricted
-    public func remove_restricted(canister_id : Principal) : () {
+    private func remove_restricted(canister_id : Principal) : () {
         let new_canister_info : GLOBAL_INFO.CanisterInfo = {
             canister_id = canister_id;
             is_restricted = false;
@@ -119,12 +119,12 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
 
     // proposal
 
-     /// 1.生成一个提案
+     /// 1.生成一个提案, 参数 wasm_module 可选，在install 时候需要
     public shared ({caller})  func  make_proposal (operation_type: GLOBAL_INFO.OperationType, canister_id : Principal, wasm_module: ?GLOBAL_INFO.Wasm_module) : async () {
             //1. 确认是否是团队成员之一
             assert (check_member(caller));
             //2.  确认canister 是否存在
-            assert (check_canisterExist(canister_id)); 
+            assert (check_canister_exist(canister_id)); 
 
             //3. 确认该提案是否有权限限制
             switch (operation_type) { 
@@ -166,6 +166,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
                     proposal_refusers = proposal_refusers;
                     proposal_completed = false;
                 };
+                
 
                 proposals := Trie.replace(proposals, {hash = Hash.hash(proposal_id); key =  proposal_id}, Nat.equal, ?new_proposal).0;
                 //判断是否满足执行条件，对提案就行执行
@@ -197,7 +198,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
             case (#stop) {
                 await stop_canister(proposal.canister_id);
             };
-            case (#install) {
+            case (#install) { 
                 await install_code(proposal.canister_id, proposal.wasm_module);
             };
             case (#delete) {
@@ -232,7 +233,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     };
 
     //检查canister是否存在
-    private func check_canisterExist(canister_id: Principal) : Bool {
+    private func check_canister_exist(canister_id: Principal) : Bool {
         switch (Trie.get(canisters, {hash = Principal.hash(canister_id); key =  canister_id}, Principal.equal)) {
             case null return false;
             case _ return true;

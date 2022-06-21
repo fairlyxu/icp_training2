@@ -1,7 +1,7 @@
 /* A simple webapp that authenticates the user with Internet Identity and that
  * then calls the whoami canister to check the user's principal.
  */
-
+import { course5 } from "../../declarations/course5"; 
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 
@@ -25,11 +25,9 @@ document.body.onload = () => {
   } else {
     iiUrl = `https://${process.env.II_CANISTER_ID}.dfinity.network`;
   }
-
-  //iiUrl = "http://localhost:8000/?canisterId=r7inp-6aaaa-aaaaa-aaabq-cai"
   document.getElementById("iiUrl").value = iiUrl;
 };
-
+/*
 document.getElementById("loginBtn").addEventListener("click", async () => {
   // When the user clicks, we start the login process.
   // First we have to create and AuthClient.
@@ -62,4 +60,47 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   const principal = await webapp.whoami();
   // show the principal on the page
   document.getElementById("loginStatus").innerText = principal.toText();
+});*/
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+
+  const authClient = await AuthClient.create();
+  const iiUrl = document.getElementById("iiUrl").value;
+
+  authClient.login({
+    identityProvider: iiUrl,
+    onSuccess: async()=>{
+        const identity = await authClient.getIdentity();
+        document.getElementById("loginStatus").innerText = identity.getPrincipal().toText();
+        document.getElementById("loginBtn").style.display = "none";
+        document.getElementById("iiUrl").innerText = iiUrl;
+    }
+  })
 });
+
+document.getElementById("fresh_members").addEventListener("click", async () => {
+  console.log("fresh_members")
+  let tmpdiv = document.getElementById("all_members");
+  tmpdiv.replaceChildren([]); 
+  const members = await course4.show_members();
+  console.log( mcnShowControllers)
+  for(let i = 0 ; i < members.length; i++){
+      let post = document.createElement('post');
+      post.innerText = members[i];
+      let post2 = document.createElement('post2');
+      post2.innerText = '\n'
+      tmpdiv.appendChild(post);
+      tmpdiv.appendChild(post2); 
+  }  
+})
+
+document.getElementById("fresh_canister").addEventListener("click", async () => {
+  let tmpdiv = document.getElementById("all_canisters");
+  tmpdiv.replaceChildren([]); 
+  const canisters = await mcn.show_canisters(); 
+  for(let i = 0 ; i < canisters.length; i++){
+      let post = document.createElement('li');
+      post.innerText = canisters[i].canister_id + ' & '+ canisters[i].is_restricted + '\n';
+      tmpdiv.appendChild(post); 
+  }
+})
