@@ -101,7 +101,7 @@ https://github.com/dfinity/interface-spec/blob/master/spec/ic.did
 
  * 编译成motoko文件
 ```bash
-didc bind -t mo ic.did > src/dynamic_canister/ic.mo
+didc bind -t mo ic.did > src/hello_canister/ic.mo
 ```
 
 ## 启动、部署和测试调用
