@@ -29,9 +29,9 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
     private stable var proposalId : Nat = 0 ; 
 
     // create canister 
-    public shared ({caller}) func create_canister() : async ?Principal{
+    private func create_canister() : async ?Principal{
         // check
-        assert (check_member(caller));
+        //assert (check_member(caller));
         let settings = {
             freezing_threshold = null;
             controllers = ?[Principal.fromActor(self)];
