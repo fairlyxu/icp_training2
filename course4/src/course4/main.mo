@@ -31,16 +31,16 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
     private stable var proposalId : Nat = 0 ; 
     
     // 查询所有成员 
-    public shared({ caller }) func show_members() : async [T.Propose] { 
+    public shared({ caller }) func show_members() : async [] { 
       Iter.toArray(memberSet.vals());
     };
     //查询所有的提案
-    public shared({ caller }) func show_proposals() : async [T.Propose] { 
+    public shared({ caller }) func show_proposals() : async [GLOBAL_INFO.Proposal] { 
       Iter.toArray(proposals.vals());
     };
 
     //显示所有的Canister
-    public shared func show_canisters() : async [T.MultiSignatureCanister] {
+    public shared func show_canisters() : async [GLOBAL_INFO.CanisterInfo] {
       Iter.toArray(canisters.vals());
     }; 
 
