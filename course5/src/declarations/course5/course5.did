@@ -19,4 +19,4 @@ type OperationType =
    start;
    stop;
  };
-service : (nat, nat, vec principal) -> anon_class_20_1
+service : (nat, vec principal) -> anon_class_20_1

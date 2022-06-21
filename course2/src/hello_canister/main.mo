@@ -10,11 +10,10 @@ import IC "./ic";
 import GLOBAL_INFO "./global_info";
 /*
  传入参数说明：
- 1. min 为最小通过提案的成员数量
- 2. total 为总成员数
- 3. members 成员
+ 1. minimum 为最小通过提案的成员数量
+ 2. members 成员,成员数量必须大于等于minimum
 */
-actor class (min : Nat, total : Nat, members : [Principal]) = self {
+shared actor class ({minimum : Nat;members : [Principal]})= self {
 
     private let ic : IC.Self = actor "aaaaa-aa";
     

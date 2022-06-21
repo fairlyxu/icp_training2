@@ -13,11 +13,10 @@ import IC "./ic";
 import GLOBAL_INFO "./global_info";
 /*
  传入参数说明：
- 1. min 为最小通过提案的成员数量
- 2. total 为总成员数
- 3. members 成员
+ 1. minimum 为最小通过提案的成员数量
+ 2. members 成员
 */
-actor class (min : Nat, total : Nat, members : [Principal]) = self {
+shared actor class ({minimum : Nat;members : [Principal]})= self {
 
     private let ic : IC.Self = actor("aaaaa-aa");
     
@@ -170,7 +169,7 @@ actor class (min : Nat, total : Nat, members : [Principal]) = self {
 
                 proposals := Trie.replace(proposals, {hash = Hash.hash(proposal_id); key =  proposal_id}, Nat.equal, ?new_proposal).0;
                 //判断是否满足执行条件，对提案就行执行
-                if ((proposal_approve_num >= min) and (not proposal.proposal_completed)) { 
+                if ((proposal_approve_num >= minimum) and (not proposal.proposal_completed)) { 
                     await execute_proposal(new_proposal);
 
                 };

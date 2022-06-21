@@ -24,6 +24,4 @@ export const idlFactory = ({ IDL }) => {
   });
   return anon_class_20_1;
 };
-export const init = ({ IDL }) => {
-  return [IDL.Nat, IDL.Nat, IDL.Vec(IDL.Principal)];
-};
+export const init = ({ IDL }) => { return [IDL.Nat, IDL.Vec(IDL.Principal)]; };

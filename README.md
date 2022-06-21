@@ -56,6 +56,34 @@ If you are hosting frontend code somewhere without using DFX, you may need to ma
 - Write your own `createActor` constructor
 
 
+### II 和相关依赖安装
+https://github.com/dfinity/agent-js/tree/main/packages
+```bash
+npm i --save @dfinity/auth-client
+npm i --save @dfinity/agent
+npm i --save @dfinity/identity
+npm i --save @dfinity/authentication
+```
+
+### 生成测试用的 principal id 
+dfx identity --help
+```bash
+dfx identity new alice   
+dfx identity use alice
+dfx identity get-principal  
+```
+```bash
+dfx identity use default
+dfx identity get-principal  
+dfx identity whoami   //default
+```
+```bash
+dfx identity new bob 
+dfx identity use bob 
+dfx identity get-principal 
+```
+
+
 ## 安装 didc 工具
 
  * 下载Mac版本
