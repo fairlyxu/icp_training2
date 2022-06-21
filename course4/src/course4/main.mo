@@ -11,8 +11,8 @@ import IC "./ic";
 import GLOBAL_INFO "./global_info";
 /*
  传入参数说明：
- 1. min 为最小提案数量
- 2. total 为总人数
+ 1. min 为最小通过提案的成员数量
+ 2. total 为总成员数
  3. members 成员
 */
 actor class (min : Nat, total : Nat, members : [Principal]) = self {
