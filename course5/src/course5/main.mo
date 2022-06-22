@@ -18,8 +18,7 @@ import GLOBAL_INFO "./global_info";
 */
 shared actor class ({minimum : Nat;members : [Principal]})= self {
 
-    private let ic : IC.Self = actor("aaaaa-aa");
-    
+    private let ic : IC.Self = actor("aaaaa-aa"); 
     //canisters
     private stable var canisters: Trie.Trie<Principal, GLOBAL_INFO.CanisterInfo> = Trie.empty<Principal, GLOBAL_INFO.CanisterInfo>();
     
@@ -48,9 +47,7 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
     }; */
 
     // create canister 
-    public shared ({caller}) func create_canister() : async ?Principal{
-        // check
-        assert (check_member(caller));
+    private func create_canister() : async ?Principal{  
         let settings = {
             freezing_threshold = null;
             controllers = ?[Principal.fromActor(self)];
@@ -73,8 +70,7 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
 
     // install 
     public shared ({caller}) func install_code(canister_id : Principal, wasm_module : ?GLOBAL_INFO.Wasm_module) : async () {
-        //增加至提案队列
-        //make_proposal( (#install, canister_id,wasm_module)) 
+        //增加至提案队列 
         await ic.install_code ({
             arg = [];
             wasm_module = Option.unwrap(wasm_module);
@@ -116,8 +112,7 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
         canisters := Trie.replace(canisters, {hash = Principal.hash(canister_id); key =  canister_id}, Principal.equal, ?new_canister_info).0;
     };
 
-    // proposal
-
+    // proposal  
      /// 1.生成一个提案, 参数 wasm_module 可选，在install 时候需要
     public shared ({caller})  func  make_proposal (operation_type: GLOBAL_INFO.OperationType, canister_id : Principal, wasm_module: ?GLOBAL_INFO.Wasm_module) : async () {
             //1. 确认是否是团队成员之一
@@ -164,9 +159,7 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
                     proposal_refuse_num = proposal_refuse_num;
                     proposal_refusers = proposal_refusers;
                     proposal_completed = false;
-                };
-                
-
+                }; 
                 proposals := Trie.replace(proposals, {hash = Hash.hash(proposal_id); key =  proposal_id}, Nat.equal, ?new_proposal).0;
                 //判断是否满足执行条件，对提案就行执行
                 if ((proposal_approve_num >= minimum) and (not proposal.proposal_completed)) { 
@@ -224,6 +217,11 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
             proposal_refusers = [];
             proposal_completed = false;
         }).0;
+    };
+
+    //5. 删除提案
+    public shared ({caller})  func  remove_proposal(proposal_id : Nat) : async () {
+        proposals := Trie.remove<(proposals, {hash = Hash.hash(pproposal_id); key = proposal_id}, Nat.equal); 
     };
 
     //检查是否是团队成员

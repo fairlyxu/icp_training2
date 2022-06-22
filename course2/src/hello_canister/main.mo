@@ -77,23 +77,7 @@ shared actor class ({minimum : Nat;members : [Principal]})= self {
      public shared ({caller})  stop_canister(canister_id : Principal) : async () { 
         let res = await ic.stop_canister ({ canister_id = canister_id});
     };
-    // add_restricted
-    private func add_restricted(canister_id : Principal) : () {
-        let new_canister_info : GLOBAL_INFO.CanisterInfo = {
-            canister_id = canister_id;
-            is_restricted = true;
-        };
-        canisters := Trie.replace(canisters, {hash = Principal.hash(canister_id); key =  canister_id}, Principal.equal, ?new_canister_info).0;
-    };
-    
-    // remove_restricted
-    private func remove_restricted(canister_id : Principal) : () {
-        let new_canister_info : GLOBAL_INFO.CanisterInfo = {
-            canister_id = canister_id;
-            is_restricted = false;
-        };
-        canisters := Trie.replace(canisters, {hash = Principal.hash(canister_id); key =  canister_id}, Principal.equal, ?new_canister_info).0;
-    };
+   
  
 
 };

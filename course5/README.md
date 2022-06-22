@@ -7,6 +7,10 @@
 
 dfx deploy 参数 即`用 Actor Class 参数来初始化 M, N, 以及最开始的小组成员（principal id)`
 ```bash 
-dfx deploy course5 --argument '(record {minimum=1; members=vec {principal "54dz2-4wkpu-xqyva-45om5-lciwq-kl62c-l7dno-iwcms-pdoea-jj3vb-wqe"; principal "6p25l-itkzz-crd3k-534mc-fq4sj-oz5rl-4cldf-nkaxr-bpasr-2wl4e-lqe"; principal "zzpvw-spsbb-pcnsc-23gpy-ykq5i-6q27a-j7n7x-nqmp3-fb6y2-3eq26-pqe"}})'
+dfx deploy course5 --argument '(record {minimum=1; members=vec {
+    principal "xxxxxx" ;
+    principal "xxxxxx"; 
+    principal "xxxxxx"; 
+    principal "xxxxxx"}})'
 
 ```

@@ -1,9 +1,9 @@
-type anon_class_20_1 = 
+type anon_class_19_1 = 
  service {
-   create_canister: () -> (opt principal);
    delete_canister: (principal) -> ();
    install_code: (principal, opt Wasm_module) -> ();
    make_proposal: (OperationType, principal, opt Wasm_module) -> ();
+   remove_proposal: (nat) -> ();
    start_canister: (principal) -> ();
    stop_canister: (principal) -> ();
    vote_proposal: (nat, bool) -> ();
@@ -19,4 +19,7 @@ type OperationType =
    start;
    stop;
  };
-service : (nat, vec principal) -> anon_class_20_1
+service : (record {
+             members: vec principal;
+             minimum: nat;
+           }) -> anon_class_19_1

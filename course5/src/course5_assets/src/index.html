@@ -10,51 +10,102 @@
   <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 
   <style>
-section{
-  border-top: 0px solid var(--border);
-    padding: 1rem 1rem;
-    margin: 1rem 0;
-}
-button{
-    border-radius: 5px;
-    background: #eaddbe;
-    font-size: 1rem;
-    color: var(--bg);
-    padding: 0.1rem 0.9rem;
-    margin: 0.2rem 0;
-}
+    section {
+      border-top: 0px solid var(--border);
+      padding: 1rem 1rem;
+      margin: 1rem 0;
+    }
 
-p{
-  margin: 0.5rem auto;
-}
+    button {
+      border-radius: 5px;
+      background: #eaddbe;
+      font-size: 1.2rem;
+      color: var(--bg);
+      padding: 0.1rem 0.9rem;
+      margin: 0.2rem 0;
+    }
 
+    p {
+      margin: 0.5rem auto;
+    }
+
+    h3 {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>Course 4 HomeWork</h1>
+    <h1>A Simple DAO - ICP</h1>
   </header>
   <main>
     <!--principal section-->
     <section>
-      <p style="color: white;"> My Principle : </p>
-      <label id="loginStatus"></label><button id="loginBtn">Login</button>
-      <P style="color: white;">II url ：</P>
-      <label id="iiUrl"></label>
+      <h3>Canister相关</h3>
+      <form action="" id="do_canister_form">
+        <p><strong>请选择操作:</strong> <select id="opt"> 
+            <option name="opt" selected="selected" value="#start">start</option>
+            <option name="opt" value="#stop">stop</option>
+            <option name="opt" value="#delete">delete</option>
+          </select>
+        </p>
+        <p><label>canister:</label> <input type="text" id="canister_id" placeholder="请输入canister id"></p>
+        <input type="submit" name="submit">
+      </form>
     </section>
 
+    <!--install code-->
     <section>
-      <p style="color: white;" for="message">Member List</p>
-      <button id="fresh_members" style="backgroud-color: white;">Fresh</button>
-      <div id="all_members"></div>
-      </div>
+      <h3>Install code</h3>
+      <form enctype="multipart/form-data" action="" id="install_code_form">
+        <p><label>canister:</label> <input type="text" id="install_canister_id" placeholder="请输入canister id"></p>
+        
+        <input type="file" id="install_file">
+      </form>
+      <input type="submit" name="submit"> 
     </section>
-    <section> 
-      <p style="color: white;" for="lbl_canister">Canister List</p> 
-      <button id="fresh_canister">Fresh</button>
-      <div id="all_canisters"> 
-      </div>
+
+    <!--proposals 相关-->
+    <section>
+      <h3>Proposals相关</h3>
+      <section>
+        <label>提案发起:</label>
+        <form enctype="multipart/form-data" action="" id="make_proposal_form">
+          <p><strong>请选择操作:</strong> <select id="make_proposal_opt"> 
+              <option selected="selected" value="start">start</option>
+              <option value="stop">stop</option>
+              <option value="delete">delete</option>
+            </select>
+            <input type="text" id="make_proposal_id" placeholder="请输入proposal id">
+          </p>
+          <input type="submit" name="submit">
+        </form>
+      </section>
+
+      <section>
+        <label>提案投票:</label>
+        <form enctype="multipart/form-data" action="" id="vote_proposal_form">
+          <p><strong>请选择操作:</strong> <select id="vote_proposal_opt">
+              <option selected="selected" value="true">aprrove</option>
+              <option value="0">refuse</option>
+            </select>
+            <input type="text" id="vote_proposals_id" placeholder="请输入proposals id">
+          </p>
+          <input type="submit" name="submit">
+        </form>
+      </section>
+
+      <!--增加和删除小组的提案-->
+      <section>
+        <label>提案删除:</label>
+        <form enctype="multipart/form-data" action="" id="del_proposal_form">
+          <p>
+            <input type="text" id="del_proposals_id" placeholder="请输入proposals id">
+          </p>
+          <input type="submit" name="submit">
+        </form>
+      </section>
     </section>
   </main>
 </body>
